@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { UserIcon, AtSymbolIcon, LockClosedIcon, XMarkIcon } from '@heroicons/react/24/solid';
-
-// --- CHANGE 1: Get the API URL from the environment variable ---
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../config.js';
 
 const Signup = ({ isOpen, onClose, onSwitchToLogin }) => {
     const [name, setName] = useState('');
@@ -18,79 +16,77 @@ const Signup = ({ isOpen, onClose, onSwitchToLogin }) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+
         try {
-            // --- CHANGE 2: Use the API_URL variable in the request ---
-            await axios.post(`${API_URL}/api/users/signup`, { name, email, password });
-            setSuccess('Signup successful! Please log in.');
+            await axios.post(`${API_BASE_URL}/api/users/signup`, { name, email, password });
+            setSuccess('Signup successful! Redirecting...');
             setTimeout(() => {
+                onClose();
                 onSwitchToLogin();
-            }, 2000);
+            }, 1500);
         } catch (err) {
-            setError(err.response?.data?.error || 'An unexpected error occurred.');
+            setError(err.response?.data?.message || 'Signup failed. Please try again.');
         }
     };
 
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 animate-fade-in">
-            <div className="bg-slate-800/50 backdrop-blur-sm p-8 rounded-2xl shadow-2xl border border-slate-700 w-full max-w-md relative">
-                <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
-                    <XMarkIcon className="h-6 w-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="relative w-full max-w-md p-8 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg shadow-xl">
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+                >
+                    <XMarkIcon className="w-6 h-6" />
                 </button>
-                <h2 className="text-2xl font-bold text-white text-center mb-6">Create an Account</h2>
-                
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {error && <p className="bg-red-500/20 text-red-400 text-sm text-center p-3 rounded-md">{error}</p>}
-                    {success && <p className="bg-green-500/20 text-green-400 text-sm text-center p-3 rounded-md">{success}</p>}
-                    
+                <h2 className="text-3xl font-bold text-white text-center mb-6">Create an Account</h2>
+                {error && <div className="mb-4 p-3 bg-red-500 bg-opacity-20 border border-red-500 rounded text-red-300 text-sm">{error}</div>}
+                {success && <div className="mb-4 p-3 bg-green-500 bg-opacity-20 border border-green-500 rounded text-green-300 text-sm">{success}</div>}
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="relative">
-                        <UserIcon className="h-5 w-5 text-slate-400 absolute top-3.5 left-4" />
+                        <UserIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                             type="text"
-                            placeholder="Full Name"
+                            placeholder="Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            className="w-full pl-10 pr-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                             required
-                            className="pl-11 block w-full bg-slate-700/50 border-slate-600 rounded-md shadow-sm p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
                         />
                     </div>
-
                     <div className="relative">
-                        <AtSymbolIcon className="h-5 w-5 text-slate-400 absolute top-3.5 left-4" />
+                        <AtSymbolIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                             type="email"
                             placeholder="Email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            className="w-full pl-10 pr-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                             required
-                            className="pl-11 block w-full bg-slate-700/50 border-slate-600 rounded-md shadow-sm p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
                         />
                     </div>
-                    
                     <div className="relative">
-                        <LockClosedIcon className="h-5 w-5 text-slate-400 absolute top-3.5 left-4" />
+                        <LockClosedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                         <input
                             type="password"
                             placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            className="w-full pl-10 pr-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                             required
-                            className="pl-11 block w-full bg-slate-700/50 border-slate-600 rounded-md shadow-sm p-3 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"
                         />
                     </div>
-                    
-                    <button 
-                        type="submit" 
-                        className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-105 shadow-lg"
+                    <button
+                        type="submit"
+                        className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition"
                     >
                         Create Account
                     </button>
                 </form>
-
-                <p className="text-center text-sm text-gray-400 mt-6">
+                <p className="mt-6 text-center text-gray-400 text-sm">
                     Already have an account?{' '}
-                    <button onClick={onSwitchToLogin} className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline bg-transparent border-none p-0">
+                    <button onClick={onSwitchToLogin} className="text-blue-400 hover:underline">
                         Login
                     </button>
                 </p>

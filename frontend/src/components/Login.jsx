@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { AtSymbolIcon, LockClosedIcon, XMarkIcon } from '@heroicons/react/24/solid';
-
-// --- CHANGE 1: Get the API URL from the environment variable ---
-// Vite uses `import.meta.env` to access these variables.
-// The name MUST start with VITE_.
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_BASE_URL } from '../config.js';
 
 const Login = ({ isOpen, onClose, onSwitchToSignup }) => {
     const [email, setEmail] = useState('');
@@ -18,10 +14,7 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) => {
         e.preventDefault();
         setError('');
         try {
-            // --- CHANGE 2: Use the API_URL variable in the request ---
-            // This now points to http://localhost:8000 in development
-            // and https://your-backend-url.onrender.com in production.
-            const response = await axios.post(`${API_URL}/api/users/login`, { email, password });
+            const response = await axios.post(`${API_BASE_URL}/api/users/login`, { email, password });
             
             const { token, user } = response.data;
             localStorage.setItem('token', token);
