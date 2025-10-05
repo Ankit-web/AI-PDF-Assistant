@@ -157,7 +157,7 @@ const Dashboard = () => {
                     <div className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-700">
                         <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
                             <LightBulbIcon className="h-6 w-6 mr-2 text-yellow-400"/>
-                            How to Use SMART-PDF-QA
+                            How to Use AI-PDF-Assistant
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-slate-300 text-sm">
                             <div>

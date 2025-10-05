@@ -11,7 +11,7 @@ const Navbar = ({ onLoginClick, onSignupClick }) => {
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
                         <BookOpenIcon className="h-8 w-8 text-indigo-400" />
-                        <span className="text-white text-2xl font-bold ml-3">SMART-PDF-QA</span>
+                        <span className="text-white text-2xl font-bold ml-3">AI-PDF-Assistant</span>
                     </div>
                     <div className="flex items-center space-x-4">
                         <button onClick={onLoginClick} className="text-slate-300 hover:text-white transition">Login</button>
@@ -43,7 +43,7 @@ const Footer = () => {
     return (
         <footer className="bg-slate-900 mt-20">
             <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-slate-400">
-                <p>&copy; 2025 SMART-PDF-QA. All rights reserved.</p>
+                <p>&copy; 2025 AI-PDF-Assistant. All rights reserved.</p>
             </div>
         </footer>
     );
