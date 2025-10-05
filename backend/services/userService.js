@@ -1,45 +1,14 @@
-// ✅ services/userService.js
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
 import userRepository from "../repositories/userRepository.js";
 import serverConfig from "../config/serverConfig.js";
 
-const getUserById = async (id) => {
-  const user = await userRepository.findUserById(id);
-  if (!user) throw new Error("User not found");
-  return {
-    id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    isActive: user.isActive,
-  };
-};
-
-const updateUserProfile = async (id, updates) => {
-  const updatedUser = await userRepository.updateUser(id, updates);
-  return {
-    id: updatedUser._id,
-    name: updatedUser.name,
-    email: updatedUser.email,
-    role: updatedUser.role,
-  };
-};
-
-const deactivateUser = async (id) => {
-  await userRepository.updateUser(id, { isActive: false });
-  return { message: "Account deactivated" };
-};
-
-const changeRole = async (id, newRole) => {
-  const updated = await userRepository.updateUser(id, { role: newRole });
-  return {
-    message: "Role updated",
-    role: updated.role,
-  };
-};
-
 const createUser = async ({ name, email, password }) => {
+  // Add validation
+  if (!name || !email || !password) {
+    throw new Error(`Missing required fields: name=${!!name}, email=${!!email}, password=${!!password}`);
+  }
+
   const existingUser = await userRepository.findUserByEmail(email);
   if (existingUser) throw new Error("User already exists");
 
@@ -60,8 +29,6 @@ const createUser = async ({ name, email, password }) => {
   };
 };
 
-// we are now implementing the login functionality
-
 const loginUser = async ({ email, password }) => {
     const user = await userRepository.findUserByEmail(email);
     if (!user) throw new Error("User not Found (userService)");
@@ -76,7 +43,6 @@ const loginUser = async ({ email, password }) => {
     );
 
     return {
-        message: "Login Successful!",
         token,
         user: {
             id: user._id,
@@ -87,6 +53,29 @@ const loginUser = async ({ email, password }) => {
     };
 };
 
+const getUserById = async (userId) => {
+  const user = await userRepository.findUserById(userId);
+  if (!user) throw new Error("User not found");
+  return user;
+};
+
+const updateUserProfile = async (userId, updates) => {
+  const user = await userRepository.updateUser(userId, updates);
+  if (!user) throw new Error("User not found");
+  return user;
+};
+
+const deactivateUser = async (userId) => {
+  const user = await userRepository.deactivateUser(userId);
+  if (!user) throw new Error("User not found or already deactivated");
+  return { message: "User deactivated successfully" };
+};
+
+const changeRole = async (userId, newRole) => {
+  const user = await userRepository.updateUser(userId, { role: newRole });
+  if (!user) throw new Error("User not found");
+  return { message: "User role updated", user };
+};
 
 export default {
   getUserById,
@@ -96,4 +85,3 @@ export default {
   createUser,
   loginUser,
 };
-
